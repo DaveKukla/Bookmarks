@@ -1,10 +1,14 @@
 import sqlite3
 import os
+import shutil
 from PIL import Image
 from io import BytesIO
 
-START_FOLDER = 'C:\\Users\\C1708002\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Bookmarks'
-FIREFOX_FOLDER = 'C:\\Users\\C1708002\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\1ynqo9s2.default-release'
+START_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Bookmarks'
+FIREFOX_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\risvndmx.default-release'
+
+shutil.rmtree(f'{START_FOLDER}', ignore_errors=True)
+os.mkdir(f'{START_FOLDER}')
 
 conn_places = sqlite3.connect(f'{FIREFOX_FOLDER}\\places.sqlite')
 c_places = conn_places.cursor()
@@ -47,68 +51,3 @@ for bookmark in c_places.fetchall():
     except FileNotFoundError:
         pass
     os.rename(f'{START_FOLDER}\\{title}.txt', f'{START_FOLDER}\\{title}.url')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# import os, shutil
-#
-# with open('C:\\Users\\C1708002\\Favorites\\bookmarks.html', encoding='utf-8', mode='r') as f:
-#     data = f.read()
-#     f.close()
-#
-# idx_start = 0
-# idx_end = 0
-#
-# end = True
-# path = 'C:\\Users\\C1708002\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\bookmarks\\'
-#
-# shutil.rmtree(path, ignore_errors=True)
-# os.mkdir(path)
-#
-# while end:
-#     idx_start = data.find('A HREF="', idx_end)
-#     idx_end = data.find('</A>', idx_start)
-#
-#     if idx_end == -1 or idx_start == -1:
-#         end = False
-#         break
-#
-#     row = data[idx_start + 8 : idx_end]
-#     addr_end = row.find('" ADD_DATE')
-#     addr = row[:addr_end]
-#
-#     name_start = row.find('">', addr_end)
-#     name = row[name_start + 2:]
-#     print(addr, name)
-#     with open(path + name + '.txt', encoding='utf-8', mode='w') as f:
-#         f.write('[InternetShortcut]\nURL=' + addr + '\nIconFile=' + 'C:\\Users\\C1708002\\Documents\\zz__other\\ico\\' + name.lower() + '.ico\nIconIndex=0')
-#
-#     os.rename(path + name + '.txt', path + name.lower() + '.url')
-
-
