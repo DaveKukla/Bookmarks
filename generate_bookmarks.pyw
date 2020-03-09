@@ -4,8 +4,14 @@ import shutil
 from PIL import Image
 from io import BytesIO
 
+
+hash_folder = ''
+for folder in os.listdir(f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\'):
+    if '.default-release' in str(folder):
+        hash_folder = str(folder)
+
 START_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Bookmarks'
-FIREFOX_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\risvndmx.default-release'
+FIREFOX_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\{hash_folder}'
 
 shutil.rmtree(f'{START_FOLDER}', ignore_errors=True)
 os.mkdir(f'{START_FOLDER}')
