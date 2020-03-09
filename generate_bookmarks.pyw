@@ -10,15 +10,15 @@ for folder in os.listdir(f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozill
     if '.default-release' in str(folder):
         hash_folder = str(folder)
 
-START_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Bookmarks'
-FIREFOX_FOLDER = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\{hash_folder}'
+start_folder = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Bookmarks'
+firefox_folder = f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\{hash_folder}'
 
-shutil.rmtree(f'{START_FOLDER}', ignore_errors=True)
-os.mkdir(f'{START_FOLDER}')
+shutil.rmtree(f'{start_folder}', ignore_errors=True)
+os.mkdir(f'{start_folder}')
 
-conn_places = sqlite3.connect(f'{FIREFOX_FOLDER}\\places.sqlite')
+conn_places = sqlite3.connect(f'{firefox_folder}\\places.sqlite')
 c_places = conn_places.cursor()
-conn_favicons = sqlite3.connect(f'{FIREFOX_FOLDER}\\favicons.sqlite')
+conn_favicons = sqlite3.connect(f'{firefox_folder}\\favicons.sqlite')
 c_favicons = conn_favicons.cursor()
 
 c_places.execute('SELECT `fk`, `title` FROM `moz_bookmarks` WHERE `fk` NOT NULL')
@@ -46,14 +46,14 @@ for bookmark in c_places.fetchall():
         icon = c_favicons.fetchone()[0]
         icon = BytesIO(icon)
         image = Image.open(icon)
-        image.save(f'{START_FOLDER}\\{title}.ico')
+        image.save(f'{start_folder}\\{title}.ico')
     except TypeError:
         pass
 
-    with open(f'{START_FOLDER}\\{title}.txt', encoding='utf-8', mode='w') as f:
-        f.write(f'[InternetShortcut]\nURL={url}\nIconFile={START_FOLDER}\\{title}.ico\nIconIndex=0')
+    with open(f'{start_folder}\\{title}.txt', encoding='utf-8', mode='w') as f:
+        f.write(f'[InternetShortcut]\nURL={url}\nIconFile={start_folder}\\{title}.ico\nIconIndex=0')
     try:
-        os.remove(f'{START_FOLDER}\\{title}.url')
+        os.remove(f'{start_folder}\\{title}.url')
     except FileNotFoundError:
         pass
-    os.rename(f'{START_FOLDER}\\{title}.txt', f'{START_FOLDER}\\{title}.url')
+    os.rename(f'{start_folder}\\{title}.txt', f'{start_folder}\\{title}.url')
