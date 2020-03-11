@@ -27,6 +27,17 @@ for bookmark in c_places.fetchall():
     url = c_places.fetchone()[0]
     short_url = '%' + '/'.join(url.strip().split('/')[0:3]) + '%'
 
+    if not title:
+        continue
+
+    safe_title = []
+    for letter in title:
+        if letter.isalnum():
+            safe_title.append(letter)
+        else:
+            safe_title.append('_')
+    title = ''.join(safe_title)
+
     c_favicons.execute('SELECT `id` FROM `moz_pages_w_icons` WHERE `page_url` LIKE ?', (short_url,))
     try:
         page_id = c_favicons.fetchone()[0]
@@ -39,15 +50,16 @@ for bookmark in c_places.fetchall():
     except TypeError:
         icon_id = 'NULL'
 
-    c_favicons.execute('SELECT `data` FROM `moz_icons` WHERE `id` = ?', (icon_id,))
-    title = title.replace('/', '_')
-    try:
-        icon = c_favicons.fetchone()[0]
-        icon = BytesIO(icon)
-        image = Image.open(icon)
-        image.save(f'{start_folder}\\{title}.ico')
-    except TypeError:
-        pass
+    if not icon_id == 'NULL':
+        c_favicons.execute('SELECT `data` FROM `moz_icons` WHERE `id` = ?', (icon_id,))
+
+        try:
+            icon = c_favicons.fetchone()[0]
+            icon = BytesIO(icon)
+            image = Image.open(icon)
+            image.save(f'{start_folder}\\{title}.ico')
+        except TypeError:
+            pass
 
     with open(f'{start_folder}\\{title}.txt', encoding='utf-8', mode='w') as f:
         f.write(f'[InternetShortcut]\nURL={url}\nIconFile={start_folder}\\{title}.ico\nIconIndex=0')
