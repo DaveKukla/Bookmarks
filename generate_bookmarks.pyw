@@ -4,6 +4,7 @@ import shutil
 from PIL import Image
 from io import BytesIO
 
+
 hash_folder = ''
 for folder in os.listdir(f'{os.environ["USERPROFILE"]}\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\'):
     if '.default-release' in str(folder):
